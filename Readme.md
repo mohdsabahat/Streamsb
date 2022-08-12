@@ -1,10 +1,6 @@
-!(Work in Progress)[https://i.ibb.co/bHB3crc/banner.png]
+![Work in Progress](https://i.ibb.co/bHB3crc/banner.png)
 # Unofficial Streamsb Api
----
-!(Streamsb Api)[https://streamsb.com/streamSB_images/logo.png]
----
-Unofficial Python wrapper for (Streamsb Api)[https://support.streamsb.com/docs]
-Streamsb is a Video hosting website which providea unlimited storage.
+### unofficial Python wrapper for [Streamsb Api](https://support.streamsb.com/docs). Streamsb is a Video hosting website which provides unlimited storage.
 ---
 ## Install
 ```
@@ -14,7 +10,7 @@ Pip package coming Soon
 ---
 ## Usage
 import the client class and create Client object, it requires an Api Key as its only parameter.
-You may get an API key from (Streamsb Site)[https://streamsb.com/?op=my_account]
+You may get an API key from [Streamsb Site](https://streamsb.com/?op=my_account)
 ```python
 from streamsb import Client
 client = Client('Your_API_Key')
