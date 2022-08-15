@@ -68,7 +68,7 @@ class FileClient(StreamsbClient):
         else:
             raise InvalidAPIResponse(f'Did not get an OK response from API.\n{resp["msg"]}')
 
-    def list(self, filter: dict)->FileList :
+    def list(self, filter: dict = {})->FileList :
 
         params = {}
         if filter.get('title', False):
@@ -79,10 +79,14 @@ class FileClient(StreamsbClient):
             params.update({'per_page': filter.get('per_page')})
         if filter.get('public'):
             params.update({'public': 1 if filter.get('public', False) else 0})
-        if filter.get('fld_id', False):
+        if filter.get('folder_id', False):
             params.update({'fld_id': filter.get('fld_id')})
         if filter.get('created', False):
-            params.update({'created': datetime.isoformat(filter.get('created'), sep = ' ')})
+            try:
+                params.update({'created': datetime.isoformat(filter.get('created'), sep = ' ')})
+            except:
+                print('filter.created must be a datetime object')
+                pass
         if filter.get('title', False):
             params.update({'title': filter.get('title')})
 
