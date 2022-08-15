@@ -9,7 +9,7 @@ class AccountClient(StreamsbClient):
     info_path = 'info'
     stat_path = 'stats'
 
-    def __init__(self, api_key: str = None):
+    def __init__(self, api_key: str):
 
         super().__init__(api_key)
 
@@ -22,17 +22,14 @@ class AccountClient(StreamsbClient):
         if resp.get('msg') == 'OK':
             return AccountInfo(resp)
         else:
-            raise InvalidAPIResponse('Did not get an OK response from API.')
+            raise InvalidAPIResponse('Did not get an OK response from API.', resp)
 
     def stats(self):
 
-        try:
-            resp = self._get(
-                    self._create_url(self.account_base, self.stat_path)
-                    )
-        except NotFound:
-            raise AccountNotFound
+        resp = self._get(
+                self._create_url(self.account_base, self.stat_path)
+                )
         if resp.get('msg') == 'OK':
             return AccountStat(resp)
         else:
-            raise InvalidAPIResponse('Did not get an OK response from API.')
+            raise InvalidAPIResponse(f'Did not get an OK response from API.{resp["msg"]}')

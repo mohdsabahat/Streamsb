@@ -34,10 +34,11 @@ class NotFound(StreamsbError):
 
 class AccountNotFound(StreamsbError):
 
-    def __init__(self, msg):
+    def __init__(self, code, msg):
 
+        self.code = code
         self.msg = msg
 
     def __str__(self):
 
-        return f'Account not found with API Key :{self.msg}\nCheck if the key is correct!'
+        return f'Account not found with API Key :{self.code}\nCheck if the key is correct!\nAPI Response : {self.msg}'

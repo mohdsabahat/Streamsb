@@ -1,4 +1,3 @@
-
 class Account:
 
     def __init__(self, resp):
@@ -6,7 +5,7 @@ class Account:
         self.raw = resp
         self._deserialize(resp['result'])
 
-    def _deserialize(self, result):
+    def _deserialize(self, result:dict):
 
         for k,v in result.items():
             setattr(self, k, v)
@@ -23,7 +22,7 @@ class AccountInfo(Account):
         super().__init__(resp)
 
 class AccountStat(Account):
-    
+
     def __init__(self, resp):
         self.raw = resp
         self.stat = []
