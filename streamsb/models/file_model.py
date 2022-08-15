@@ -91,7 +91,7 @@ class FileList:
 
         self.raw = resp
         self.results = resp['result'].get('results', 0)
-        self.total_results = resp['result'].get('results_total', 0)
+        self.total_results = int(resp['result'].get('results_total', 0)
         self._deserialize_list(resp.get('result',{}))
 
     def _deserialize_list(self, result):
@@ -100,3 +100,14 @@ class FileList:
         for file in result.get('files', {}):
             self.files.append(LongFile(file))
 
+class Quality:
+
+    url = None
+    size = None
+
+    def __init__(self, resp: dict = {}):
+
+        if resp:
+            self.raw = resp
+            self.url = resp.get('url', None)
+            self.size = int(resp.get('size', 0))

@@ -1,5 +1,6 @@
 from .client import StreamsbClient
-from .models import FileInfo, File, LongFile, FileList
+from .models import (FileInfo, File, 
+        LongFile, FileList, Quality)
 from .errors import InvalidAPIResponse
 
 from datetime import datetime
@@ -11,6 +12,9 @@ class FileClient(StreamsbClient):
     rename_path = 'rename'
     clone_path = 'clone'
     list_path = 'list'
+    direct_all_path = 'direct'
+    direct_url_path = 'direct_link'
+    set_folder_path = 'set_folder'
 
     def __init__(self, api_key: str):
 
@@ -29,7 +33,7 @@ class FileClient(StreamsbClient):
                 infos.append(FileInfo(result))
             return infos
         else:
-            raise InvalidAPIResponse('Did not get an OK response from API.', resp)
+            raise InvalidAPIResponse(f'Did not get an OK response from API.', resp)
 
     def rename(self, filecode: str, title: str, name: str = None):
 
@@ -48,7 +52,7 @@ class FileClient(StreamsbClient):
             else:
                 return False
         else:
-            raise InvalidAPIResponse('Did not get an OK response from API.\n{resp["msg"]}')
+            raise InvalidAPIResponse(f'Did not get an OK response from API.\n{resp["msg"]}')
     
     def clone(self, filecode: str):
 
@@ -62,7 +66,7 @@ class FileClient(StreamsbClient):
         if resp.get('msg') == 'OK':
             return File(resp)
         else:
-            raise InvalidAPIResponse('Did not get an OK response from API.\n{resp["msg"]}')
+            raise InvalidAPIResponse(f'Did not get an OK response from API.\n{resp["msg"]}')
 
     def list(self, filter: dict)->FileList :
 
@@ -89,4 +93,46 @@ class FileClient(StreamsbClient):
         if resp.get('msg') == 'OK':
             return FileList(resp)
         else:
-            raise InvalidAPIResponse('Did not get an OK response from API.\n{resp["msg"]}')
+            raise InvalidAPIResponse(f'Did not get an OK response from API.\n{resp["msg"]}')
+
+    def direct_all(self, filecode: dict) ->dict :
+
+        params = {'file_code': filecode}
+        resp = self._get(
+                self._create_url(self.file_base, self.direct_all_path),
+                params
+                )
+        if resp.get('msg') == 'OK':
+            qualities = {}
+            for k,v in resp.get('result', {}).items():
+                qualities[k] = Quality(v)
+            return qualities
+        else:
+            raise InvalidAPIResponse(f'Did not get an OK response from API.\n{resp["msg"]}')
+
+    def direct_url(self, filecode: str, quality: str) -> Quality:
+
+        params = {'file_code': filecode, 'q': quality}
+        resp = self._get(
+                self._create_url(self.file_base, self.direct_url_path),
+                params
+                )
+        if resp.get('msg') == 'OK':
+            quality = Quality()
+            q.url = resp.get('url', None)
+            q.size = int(resp.get('size', 0))
+            return quality
+        else:
+            raise InvalidAPIResponse(f'Did not get an OK response from API.\n{resp["msg"]}')
+
+    def set_folder(self, filecode: str, folder_id: str) -> bool :
+
+        params = {'file_code': filecode, 'fld_id': folder_id}
+        resp = self._get(
+                self._create_url(self.file_base, self.set_folder_path),
+                params
+                )
+        if resp.get('msg') == 'OK':
+            return True
+        else:
+            raise InvalidAPIResponse(f'Did not get an OK response from API.\n{resp["msg"]}')
