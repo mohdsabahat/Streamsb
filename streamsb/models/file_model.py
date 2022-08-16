@@ -90,8 +90,10 @@ class FileList:
     def __init__(self, resp):
 
         self.raw = resp
-        self.results = resp['result'].get('results', 0)
-        self.total_results = int(resp['result'].get('results_total', 0)
+        if resp.get('result',{}).get('results', 0):
+            self.results = resp['result'].get('results', 0)
+        if resp.get('result', {}).get('results_total', 0):
+            self.total_results = int(resp['result'].get('results_total', 0))
         self._deserialize_list(resp.get('result',{}))
 
     def _deserialize_list(self, result):
