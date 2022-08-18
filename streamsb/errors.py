@@ -26,10 +26,13 @@ class InvalidAPIResponse(StreamsbError):
 
 class NotFound(StreamsbError):
 
-    def __init__(self, code):
+    def __init__(self, code, msg = ''):
         self.code = code
+        self.message = msg
 
     def __str__(self):
+        if self.message:
+            return f'{self.message} : {self.code}'
         return f'Resource Not Found : {self.code}'
 
 class AccountNotFound(StreamsbError):

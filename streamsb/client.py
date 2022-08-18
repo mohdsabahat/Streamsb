@@ -13,7 +13,6 @@ class StreamsbClient():
     api_url = urljoin(base_url, api_base)
     api_key = None
     session = APISession()
-    print('session created')
 
     def __init__(self, api_key: str):
 
@@ -30,6 +29,34 @@ class StreamsbClient():
         params.update({'key': self.api_key})
         try:
             resp = requests.get(url, params = params)
+            print(resp.headers)
+        except Exception as e:
+            raise APIError(0, e)
+
+        code = resp.status_code
+        if resp.ok:
+            return resp.json()
+        elif code>=400 or code<500:
+            if code == 404:
+                raise NotFound(self.api_key)
+            elif code == 403:
+                raise AccountNotFound(self.api_key, resp.json()['msg'])
+            else:
+                raise APIError(code)
+        elif code>=500:
+            raise APIError(code)
+        else:
+            return {}
+
+
+    def _post(self, url:str, params:dict = {}, headers = {}):
+
+        # Upload Not working
+        print('api : ', self.api_key)
+        print('url :', url)
+        params.update({'key': self.api_key})
+        try:
+            resp = requests.post(url, params = params, headers = headers)
             print(resp.headers)
         except Exception as e:
             raise APIError(0, e)

@@ -34,9 +34,10 @@ class FolderClient(StreamsbClient):
         else:
             raise InvalidAPIResponse(f'Did not get an OK response from API.\n{resp["msg"]}')
 
-    def create(self, parent_id: int = None):
+    def create(self, name: str, parent_id: int = None):
 
         params = {}
+        params.update({'name': name})
         if parent_id:
             params.update({'fld_id': parent_id})
         resp = self._get(
