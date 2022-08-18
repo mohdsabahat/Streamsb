@@ -6,6 +6,7 @@ class UploadClient(StreamsbClient):
 
     upload_base = 'upload'
     server_path = 'server'
+    url_path = 'url'
 
     def __init__(self, api_key: str):
 
@@ -23,7 +24,7 @@ class UploadClient(StreamsbClient):
         else:
             raise InvalidAPIResponse(f'Did not get an OK response from API.\n{resp["msg"]}')
 
-    def upload_file(self, upload_url: str, file_path: str):
+    def file(self, upload_url: str, file_path: str):
 
         # Upload Not working
         if not os.path.exists(file_path):
@@ -33,3 +34,16 @@ class UploadClient(StreamsbClient):
                 upload_url,
                 params
                 )
+
+    def url(self, upload_url: str) -> str:
+
+        params = {'url': upload_url}
+        resp = self._get(
+                self._create_url(self.upload_base, self.url_path),
+                params
+                )
+        if resp.get('msg') == 'OK':
+            return resp.get('result',{}).get('filecode', None)
+        else:
+            raise InvalidAPIResponse(f'Did not get an OK response from API.\n{resp["msg"]}')
+
